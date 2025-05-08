@@ -5,20 +5,50 @@ O **Spotlight** 🔦 é uma prova de conceito que utiliza **Inteligência Artifi
 
 ## 🧠 Tecnologias Utilizadas
 - Python 3.10+
-- LangChain 
-- OpenAI / HuggingFace Embeddings
-- MongoDB Vector Search ou FAISS
-- KMeans / HDBSCAN
-- (Opcional) Streamlit para visualização
+- LangChain + langchain-community + langchain-openai
+- OpenAIEmbeddings
+- FAISS (para busca vetorial)
+- KMeans (via Scikit-learn)
 
 
 ## 📚 Como Usar
-1. Adicione reclamações no arquivo `data/sample_complaints.json`
-2. Execute o script principal:
-   ```bash
-   python main.py
-   ```
-3. Veja no terminal os **clusters gerados** e **recomendações semânticas** baseadas em similaridade textual
+### 1. Clone o repositório
+```bash
+git clone https://github.com/seu-usuario/spotlight.git
+cd spotlight
+```
+
+### 2. Crie e ative um ambiente virtual
+```bash
+python -m venv .venv
+# Ative:
+# Windows:
+.venv\Scripts\activate
+# Linux/macOS:
+source .venv/bin/activate
+```
+
+### 3. Instale as dependências
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure sua chave OpenAI
+Crie um arquivo `.env` na raiz com o seguinte conteúdo:
+```env
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+> Nunca suba esse arquivo para o GitHub.
+
+### 5. Execute o projeto
+```bash
+python main.py
+```
+
+Você verá:
+- Reclamações similares por busca semântica
+- Clusters de assuntos agrupados automaticamente
+- Resposta gerada pela IA com base nas reclamações
 
 
 ## 📊 Casos de Uso
