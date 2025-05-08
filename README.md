@@ -3,15 +3,17 @@
 O **Spotlight** 🔦 é uma prova de conceito que utiliza **Inteligência Artificial Generativa** para identificar padrões recorrentes em grandes volumes de reclamações, incidentes ou tickets de suporte. Com base em textos livres coletados de múltiplas fontes, o sistema aplica embeddings semânticos e técnicas de clusterização para **organizar, entender e priorizar os assuntos mais críticos**. 
 
 
-## 🧠 Tecnologias Utilizadas
+## 🧰 Tecnologias Utilizadas
 - Python 3.10+
 - LangChain + langchain-community + langchain-openai
 - OpenAIEmbeddings
 - FAISS (para busca vetorial)
 - KMeans (via Scikit-learn)
+- Streamlit (interface interativa)
 
 
-## 📚 Como Usar
+## 🔧 Como Executar Localmente
+
 ### 1. Clone o repositório
 ```bash
 git clone https://github.com/seu-usuario/spotlight.git
@@ -21,11 +23,14 @@ cd spotlight
 ### 2. Crie e ative um ambiente virtual
 ```bash
 python -m venv .venv
+
 # Ative:
 # Windows:
 .venv\Scripts\activate
+
 # Linux/macOS:
 source .venv/bin/activate
+
 ```
 
 ### 3. Instale as dependências
@@ -40,27 +45,31 @@ OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 > Nunca suba esse arquivo para o GitHub.
 
-### 5. Execute o projeto
+### 5. Execute a interface Streamlit
 ```bash
-python main.py
+streamlit run streamlit_app/app.py
 ```
 
-Você verá:
-- Reclamações similares por busca semântica
-- Clusters de assuntos agrupados automaticamente
-- Resposta gerada pela IA com base nas reclamações
+
+## 🧪 Funcionalidades
+- Inserir nome de uma empresa e importar reclamações de múltiplas fontes públicas
+- Ingestão real dos dados do [Consumidor.gov.br](https://dados.mj.gov.br/)
+- Processamento e clusterização com embeddings + IA
+- Interface interativa para explorar os clusters gerados
 
 
-## 📊 Casos de Uso
-- Priorizacão de correções em sistemas com base em feedbacks reais
-- Análise de reputação a partir de dados públicos (ReclameAqui, ouvidorias, redes sociais)
-- Insights operacionais a partir de logs e registros de atendimento
+## 📥 Fontes de Dados (implementadas)
+- ✅ **Consumidor.gov.br** (CSV oficial com download e filtro por empresa)
+- 🔜 Banco Central (Bacen)
+- 🔜 Procon/RS
 
 
 ## 🔄 Roadmap
-- [ ] Conectar a fontes de dados reais (APIs, scraping, etc.)
-- [ ] Adicionar visualização com Streamlit 
-- [ ] Criar API REST para consumo dinâmico
+- [x] Ingestão via CSV do Consumidor.gov.br por empresa
+- [x] Interface com campo para nome da empresa e botões por origem
+- [ ] Scraping ou ingestão automatizada de ReclameAqui e Bacen
+- [ ] Visualização de métricas dos clusters
+- [ ] API REST para integração com outros sistemas
 
 
 ## ✨ Origem
