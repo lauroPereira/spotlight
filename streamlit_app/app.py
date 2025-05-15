@@ -32,7 +32,7 @@ with col1:
         if empresa.strip():
             try:
                 resultado = subprocess.run(
-                    ["python", "scripts/ingest_consumidor_gov.py", empresa],
+                    ["python", "plugins/consumidor_gov.py", empresa],
                     capture_output=True,
                     text=True
                 )

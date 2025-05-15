@@ -12,7 +12,7 @@ def limpar_nome(nome):
 
 # Verifica argumento
 if len(sys.argv) < 2:
-    print("Uso: python ingest_consumidor_gov.py <nome_da_empresa>")
+    print("Uso: python consumidor_gov.py <nome_da_empresa>")
     sys.exit(1)
 
 empresa = sys.argv[1]
