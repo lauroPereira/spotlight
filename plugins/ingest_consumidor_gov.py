@@ -1,50 +1,77 @@
-import os
-import sys
-import zipfile
 import requests
 import pandas as pd
-import json
-import re
+import io
+import logging
+from typing import List
+from plugins.base import IngestPlugin
+from plugins.schema import PluginResult, Complaint
+from datetime import datetime
 
-# Sanitiza nome de arquivo
-def limpar_nome(nome):
-    return re.sub(r"[^a-zA-Z0-9]", "_", nome.strip().lower())
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
-# Verifica argumento
-if len(sys.argv) < 2:
-    print("Uso: python consumidor_gov.py <nome_da_empresa>")
-    sys.exit(1)
+class ConsumidorGovPlugin(IngestPlugin):
+    URL = (
+        "https://dados.mj.gov.br/dataset/"
+        "0182f1bf-e73d-42b1-ae8c-fa94d9ce9451/resource/"
+        "8f22bdc1-3044-46ee-9dd1-4ace84da28e4/"
+        "download/basecompleta2025-04.csv"
+    )
 
-empresa = sys.argv[1]
-nome_arquivo = limpar_nome(empresa)
-url = "https://dados.mj.gov.br/dataset/0182f1bf-e73d-42b1-ae8c-fa94d9ce9451/resource/65706bcd-80ab-4231-a7ef-9e329420f001/download/basecompleta2025-03.zip"
-zip_path = "data/basecompleta2025-03.zip"
-csv_filename = "base_completa_2025-03.csv"
-output_json = f"data/consumidor_{nome_arquivo}.json"
+    def fetch(self, company: str) -> PluginResult:
+        logger.info("🔄 Iniciando download do CSV do Consumidor.gov.br")
+        try:
+            resp = requests.get(self.URL, timeout=60, headers={"User-Agent": "Spotlight/1.0"})
+            resp.raise_for_status()
+            content = resp.content.decode('utf-8-sig')
+            logger.info("✅ Download concluído (tamanho %d bytes)", len(resp.content))
+        except Exception as e:
+            logger.error("❌ Erro HTTP ao baixar CSV: %s", e, exc_info=True)
+            raise RuntimeError(f"Erro HTTP ao baixar dados do Consumidor.gov.br: {e}")
 
-# Baixa o zip se ainda não existir
-os.makedirs("data", exist_ok=True)
-if not os.path.exists(zip_path):
-    r = requests.get(url)
-    with open(zip_path, "wb") as f:
-        f.write(r.content)
+        complaints: List[Complaint] = []
+        total_raw = 0
+        try:
+            df = pd.read_csv(io.StringIO(content), sep=';', dtype=str)
+            df.columns = df.columns.str.strip()
+            total_raw = len(df)
+            logger.info("📥 CSV lido com %d linhas", total_raw)
 
-# Extrai CSV
-with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-    zip_ref.extract(csv_filename, path="data")
+            # filtra pelo "Nome Fantasia"
+            mask = df['Nome Fantasia'].str.contains(company, case=False, na=False)
+            filtered = df[mask]
+            logger.info("🔎 %d linhas correspondentes à empresa '%s'", len(filtered), company)
 
-# Lê CSV e filtra por empresa
-df = pd.read_csv(f"data/{csv_filename}", sep=";", encoding="utf-8")
-if "Nome Fantasia" not in df.columns or "Problema" not in df.columns:
-    print("Colunas necessárias não encontradas no CSV.")
-    sys.exit(1)
+            for _, row in filtered.iterrows():
+                date_str = row.get('Data Abertura', '').strip()
+                # converte DD/MM/YYYY para datetime
+                try:
+                    date = datetime.strptime(date_str, "%d/%m/%Y")
+                except Exception:
+                    logger.warning("Formato de data inválido '%s', usando now()", date_str)
+                    date = datetime.utcnow()
+                    
+                c = Complaint(
+                    date=date,
+                    category=row.get('Assunto', ''),
+                    description=row.get('Problema', ''),
+                    razao_social=row.get('Nome Fantasia', '')
+                )
+                complaints.append(c)
+        except Exception as e:
+            logger.error("❌ Falha ao processar CSV do Consumidor.gov.br: %s", e, exc_info=True)
+            raise RuntimeError(f"Erro ao processar CSV do Consumidor.gov.br: {e}")
 
-filtro = df["Nome Fantasia"].str.lower().str.contains(empresa.lower(), na=False)
-reclamacoes = df.loc[filtro, "Problema"].dropna().astype(str).tolist()
+        result = PluginResult(
+            plugin='CONSUMIDOR_GOV',
+            company=company,
+            total_raw=total_raw,
+            complaints=complaints
+        )
+        logger.info(
+            "🏁 Consumidor.gov.br: total_raw=%d, complaints=%d",
+            result.total_raw,
+            len(result.complaints)
+        )
+        return result
 
-# Salva JSON
-with open(output_json, "w", encoding="utf-8") as f:
-    json.dump(reclamacoes, f, ensure_ascii=False, indent=2)
-
-print(f"{len(reclamacoes)} reclamações salvas em {output_json}")
-sys.exit(0)

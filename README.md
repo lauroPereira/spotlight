@@ -58,6 +58,30 @@ streamlit run streamlit_app/app.py
 - Interface interativa para explorar os clusters gerados
 
 
+## 📦 Estrutura do projeto
+spotlight
+├── .env
+├── .gitignore
+├── LICENSE
+├── README.md
+├── requirements.txt
+├── clustering
+│   └── cluster.py
+├── data
+│   └── .
+├── pipeline
+│   ├── embedding.py
+│   ├── qa_chain.py
+│   └── vectorstore.py
+├── plugins
+│   └── ingest_consumidor_gov.py
+├── streamlit_app
+│   ├── app.py
+│   └── consumidor_logo.png
+├── utils
+│   └── text_cleaner.py
+
+
 ## 📥 Fontes de Dados (implementadas)
 - ✅ **Consumidor.gov.br** (CSV oficial com download e filtro por empresa)
 - 🔜 Banco Central (Bacen)

@@ -8,10 +8,15 @@ def store_embeddings(texts, embeddings):
     from langchain.docstore.document import Document
     docs = [Document(page_content=t) for t in texts]
     store = FAISS.from_documents(docs, OpenAIEmbeddings())
+    store.save_local("indexes/faiss_index")
 
 def get_store():
+    global store
     if store is None:
-        raise ValueError("Base vetorial ainda não inicializada.")
+        try:
+            store = FAISS.load_local("indexes/faiss_index", OpenAIEmbeddings())
+        except:
+            raise ValueError("Índice FAISS não encontrado. Rode o pipeline antes.")
     return store
 
 def query_similar(query, k=5):
