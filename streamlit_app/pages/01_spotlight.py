@@ -1,6 +1,6 @@
 import sys, os
 # Garante que o diretório raiz esteja no PYTHONPATH
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 import streamlit as st
 import importlib, pkgutil, logging
@@ -21,7 +21,7 @@ logger = logging.getLogger("front-end")
 # --- Helpers ---
 def load_plugins() -> dict[str, IngestPlugin]:
     plugins = {}
-    for _, name, _ in pkgutil.iter_modules(["plugins"]):
+    for _, name, _ in pkgutil.iter_modules(["../plugins"]):
         if name.startswith("ingest_"):
             module = importlib.import_module(f"plugins.{name}")
             for obj in vars(module).values():
@@ -31,7 +31,7 @@ def load_plugins() -> dict[str, IngestPlugin]:
 
 
 def path_for(plugin_key: str, empresa: str) -> Path:
-    return Path("data") / f"{plugin_key}_{empresa}.json"
+    return Path("../data") / f"{plugin_key}_{empresa}.json"
 
 
 def load_result(plugin_key: str, empresa: str):
