@@ -1,5 +1,6 @@
 import sys, os
 # Garante que o diretório raiz esteja no PYTHONPATH
+print(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 import streamlit as st
@@ -21,7 +22,7 @@ logger = logging.getLogger("front-end")
 # --- Helpers ---
 def load_plugins() -> dict[str, IngestPlugin]:
     plugins = {}
-    for _, name, _ in pkgutil.iter_modules(["../plugins"]):
+    for _, name, _ in pkgutil.iter_modules(["plugins"]):
         if name.startswith("ingest_"):
             module = importlib.import_module(f"plugins.{name}")
             for obj in vars(module).values():
@@ -31,7 +32,7 @@ def load_plugins() -> dict[str, IngestPlugin]:
 
 
 def path_for(plugin_key: str, empresa: str) -> Path:
-    return Path("../data") / f"{plugin_key}_{empresa}.json"
+    return Path("data") / f"{plugin_key}_{empresa}.json"
 
 
 def load_result(plugin_key: str, empresa: str):
@@ -43,28 +44,53 @@ def load_result(plugin_key: str, empresa: str):
     except Exception:
         return None
 
-# --- Streamlit App ---
-st.set_page_config(page_title="Spotlight – Reclamações", layout="wide")
+st.set_page_config(page_title="🔦 Spotlight – Reclamações e processos", layout="wide")
 
-# Initialize detail selection state
-st.session_state.setdefault("detail_selected", None)
 
-# Empresa input e botão Investigar
-empresa = st.text_input("🏢 Nome da empresa", key="empresa_input")
-if st.button("🔦 Investigar", key="investigar_empresa"):
-    st.session_state["detail_selected"] = None
-    st.rerun()
-
+# Configura o a barra lateral com o nome da empresa
+st.session_state.setdefault("empresa_cache", "")
+# garante que exista
+if "empresa_cache" not in st.session_state:
+    st.session_state["empresa_cache"] = ""
+# Sidebar
+st.sidebar.title("🔦 Spotlight")
+st.sidebar.markdown(
+    "Coleta e agrupa reclamações e processos de empresas. "
+    "Escolha uma empresa na barra lateral para começar."
+)
+# Sidebar - parâmetros
+with st.sidebar:
+    st.header("⚙️ Parâmetros")
+    empresa = st.text_input(
+        "🏢 Empresa", 
+        value=st.session_state["empresa_cache"], 
+        key="empresa_sidebar"
+    )
+     # 👉 Bullet sempre visível informando a empresa selecionada
+    if st.session_state["empresa_cache"]:
+        st.markdown(f"- **Empresa selecionada:** {st.session_state['empresa_cache']}")
+        
+    if st.button("🚀 Definir Empresa"):
+        # atualiza o cache e recarrega para as outras páginas
+        st.session_state["empresa_cache"] = empresa.strip()
+        st.rerun()
+        
+# lê o parâmetro fixo da sidebar
+empresa = st.session_state["empresa_cache"]
 if not empresa:
-    st.info("Preencha o nome da empresa para iniciar.")
+    st.warning("▶️ Defina a empresa desejada na barra lateral.")
     st.stop()
 else:
-    st.markdown(f"**Investigando as reclamações/processos da empresa:** **{empresa.strip().upper()}**")
+    st.markdown(
+       f"**🔎 **Discover**: Agrupar reclamações e processos da empresa **{empresa.upper()}**"
+    )
+
 
 plugins = load_plugins()
 if not plugins:
     st.error("Nenhum plugin encontrado.")
     st.stop()
+    
 
 # Prepare session state flags
 for key in plugins:
@@ -125,20 +151,3 @@ for idx, (key, plugin) in enumerate(plugins.items()):
                 except Exception as e:
                     st.session_state[f"loading_{key}"] = False
                     msg.warning(f"Falha em {label}: {e}")
-
-        # Handle detail toggle
-        if detail_btn:
-            st.session_state["detail_selected"] = None if st.session_state["detail_selected"] == key else key
-
-# Detail section
-if st.session_state["detail_selected"]:
-    sel = st.session_state["detail_selected"]
-    label = sel.replace("ingest_", "").upper()
-    st.markdown("---")
-    st.subheader(f"Detalhamento de {label}")
-    res = load_result(sel, empresa)
-    if res:
-        for cat, qty in Counter(c.category for c in res.complaints).most_common():
-            st.markdown(f"- {cat}: {qty}")
-    else:
-        st.markdown("*Nenhum dado detalhado disponível.*")
