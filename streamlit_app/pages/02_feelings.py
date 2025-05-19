@@ -126,6 +126,7 @@ if "mood_df" in st.session_state:
 
     # Visão geral por categoria
     st.header("📊 Panorama Geral por Categoria")
+    
     pivot = dff.pivot_table(
         index=["category","source"],
         columns="sentiment",
@@ -133,6 +134,10 @@ if "mood_df" in st.session_state:
         aggfunc="count",
         fill_value=0,
     )
+    
+    rename_map = {"Negative":"😠", "Neutral":"😐", "Positive":"😍"}
+    pivot.rename(columns=rename_map, inplace=True)
+    
     st.dataframe(pivot)
     
     st.markdown("---")
@@ -145,6 +150,7 @@ if "mood_df" in st.session_state:
         # calcula percentuais por categoria
         pct = table.copy()
         table["pct"] = 100 * table["count"] / table.groupby("category")["count"].transform("sum")
+        pct["sentiment"] = pct["sentiment"].map(rename_map)
         st.dataframe(pct)
 
 else:
