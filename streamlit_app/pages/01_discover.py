@@ -81,9 +81,7 @@ if not empresa:
     st.warning("▶️ Defina a empresa desejada na barra lateral.")
     st.stop()
 else:
-    st.markdown(
-       f"**🔎 **Discover**: Agrupar reclamações e processos da empresa **{empresa.upper()}**"
-    )
+    st.title(f"🔎 Encontre reclamações de **{empresa.upper()}**")
 
 
 plugins = load_plugins()

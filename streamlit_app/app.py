@@ -31,5 +31,13 @@ with st.sidebar:
     "- 🛠️ **HelpDesk**: Gerenciar atendimento interno ao cliente (CRM, suporte, etc)\n"
 )
 
-st.title("🔦 Spotlight – Bem-vindo")
-st.write("Escolha uma empresa na barra lateral para começar.")
+st.title("🔦 Spotlight – Seja muito bem-vindo!")
+st.markdown("O 🔦 **Spotlight** está aqui para ajudar você a entender o que realmente importa nas reclamações e processos de clientes. Siga estes passos para tirar o máximo proveito:\n")
+st.markdown("1. **Escolha sua empresa**  \nNo menu à esquerda, digite o nome da empresa que deseja investigar e clique em **“🚀 Definir Empresa”**. Este passo garante que todas as páginas do app vão trabalhar com essa mesma empresa, sem confusão.\n")
+st.markdown("2. **🔎 Discover**  \nAqui você coleta e agrupa todas as reclamações e processos públicos sobre a empresa em questão. Clique em **“🔄 Atualizar”** em cada card para buscar os dados mais recentes — os totais e agrupamentos aparecerão imediatamente!\n")
+st.markdown("3. **💖 Mood Explorer**  \nQuer saber como os clientes estão se sentindo? Vá para a aba **Mood Explorer** para rodar uma análise de sentimento e descobrir quais tópicos geram mais frustração (ou elogios!).\n")
+st.markdown("4. **📊 Data Explorer**  \nPrecisa de relatórios ou planilhas? Na aba **Data Explorer** você visualiza tabelas interativas, filtra por categorias e pode exportar CSV para compartilhar com o time.\n")
+st.markdown("5. **🤖 Chat**  \nTem uma pergunta específica? Use o **Chat** para conversar de forma natural com nosso agente de IA. É só digitar sua dúvida e descobrir insights instantâneos a partir dos dados carregados.\n")
+st.markdown("6. **🛠️ HelpDesk**  \nSe o seu time de suporte utiliza CRM ou outro sistema interno, acesse **HelpDesk** para registrar e acompanhar o atendimento ao cliente de forma integrada.\n")
+st.markdown("---\n")
+st.markdown("**Dica de ouro:**  \n Defina a empresa **uma única vez** na sidebar e navegue entre as páginas sem precisar digitar de novo. Seu trabalho flui de forma contínua, do garimpo de dados até a operação do dia a dia.  \n Pronto para brilhar a lanterna no universo das reclamações? Vamos nessa! 🚀")

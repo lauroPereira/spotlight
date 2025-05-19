@@ -54,6 +54,4 @@ if not empresa:
     st.warning("▶️ Defina a empresa desejada na barra lateral.")
     st.stop()
 else:
-    st.markdown(
-       f"**📊 **Data Explorer**: Visualizar e exportar seus dados da empresa **{empresa.upper()}**"
-    )
+    st.title(f"📊 Lista de reclamações da empresa **{empresa.upper()}**")

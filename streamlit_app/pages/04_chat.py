@@ -54,6 +54,4 @@ if not empresa:
     st.warning("▶️ Defina a empresa desejada na barra lateral.")
     st.stop()
 else:
-    st.markdown(
-       f"**🤖 **Chat**: Conversar com o agente sobre os dados da empresa **{empresa.upper()}**"
-    )
+    st.title(f"🤖 Insights com agente sobre a empresa **{empresa.upper()}**")

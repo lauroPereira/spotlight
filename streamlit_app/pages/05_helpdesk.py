@@ -54,6 +54,4 @@ if not empresa:
     st.warning("▶️ Defina a empresa desejada na barra lateral.")
     st.stop()
 else:
-    st.markdown(
-       f"**🛠️ **HelpDesk**: Gerenciar atendimento interno ao cliente"
-    )
+    st.title(f"🛠️ Importe seus tickets internos")
