@@ -15,7 +15,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 st.set_page_config(page_title="Spotlight", page_icon="📈", layout="wide")
 
 # Sidebar já configurada em app.py: lê empresa_cache
-# Configura a barra lateral com o nome da empresa
 st.session_state.setdefault("empresa_cache", "")
 with st.sidebar:
     st.sidebar.title("🔦 Spotlight")

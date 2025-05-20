@@ -25,7 +25,7 @@ with st.sidebar:
     st.title("🚧 Navegação")
     st.sidebar.markdown(
     "- 🔎 **Discover**: Agrupar reclamações e processos da empresa\n"
-    "- 💖 **Mood Explorer**: Analisar sentimento das reclamações\n"
+    "- 😠 **Mood Explorer**: Analisar sentimento das reclamações\n"
     "- 📊 **Data Explorer**: Visualizar e exportar seus dados\n"
     "- 🤖 **Chat**: Conversar com o agente sobre os dados\n"
     "- 🛠️ **HelpDesk**: Gerenciar atendimento interno ao cliente (CRM, suporte, etc)\n"

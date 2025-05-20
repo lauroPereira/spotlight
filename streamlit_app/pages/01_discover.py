@@ -49,12 +49,7 @@ st.session_state.setdefault("empresa_cache", "")
 # garante que exista
 if "empresa_cache" not in st.session_state:
     st.session_state["empresa_cache"] = ""
-# Sidebar
-st.sidebar.title("🔦 Spotlight")
-st.sidebar.markdown(
-    "Coleta e agrupa reclamações e processos de empresas. "
-    "Escolha uma empresa na barra lateral para começar."
-)
+
 # Sidebar - parâmetros
 with st.sidebar:
     st.sidebar.title("🔦 Spotlight")

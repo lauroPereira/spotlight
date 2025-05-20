@@ -1,5 +1,4 @@
 import sys, os
-# Evita file watcher do Streamlit tentar acessar torch._classes
 import torch
 from pathlib import Path
 import streamlit as st
