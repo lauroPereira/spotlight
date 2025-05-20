@@ -57,20 +57,24 @@ st.sidebar.markdown(
 )
 # Sidebar - parâmetros
 with st.sidebar:
+    st.sidebar.title("🔦 Spotlight")
+    st.sidebar.markdown(
+        "Coleta e agrupa reclamações e processos de empresas. "
+        "Escolha uma empresa na barra lateral para começar."
+    )
     st.header("⚙️ Parâmetros")
     empresa = st.text_input(
         "🏢 Empresa", 
         value=st.session_state["empresa_cache"], 
-        key="empresa_sidebar"
+        key="empresa_sidebar",
+        disabled=True
+        
     )
      # 👉 Bullet sempre visível informando a empresa selecionada
     if st.session_state["empresa_cache"]:
         st.markdown(f"- **Empresa selecionada:** {st.session_state['empresa_cache']}")
         
-    if st.button("🚀 Definir Empresa"):
-        # atualiza o cache e recarrega para as outras páginas
-        st.session_state["empresa_cache"] = empresa.strip()
-        st.rerun()
+    st.button("🚀 Definir Empresa", disabled=True)
         
 # lê o parâmetro fixo da sidebar
 empresa = st.session_state["empresa_cache"]

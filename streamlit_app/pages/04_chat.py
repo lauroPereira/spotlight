@@ -22,7 +22,7 @@ from plugins.schema import PluginResult
 st.set_page_config(page_title="Chat", page_icon="💭", layout="wide")
 st.title(f"💭 Descubra ainda mais sobre: {st.session_state.get('empresa_cache','N/D').upper()}")
 
-# Sidebar: mostra empresa
+# Sidebar: mostra empresa em cache
 st.sidebar.markdown("**Empresa:** " + st.session_state.get("empresa_cache", "N/D").upper())
 
 # --- Helpers ---
@@ -32,41 +32,43 @@ def load_documents(empresa: str) -> list[Document]:
     for f in Path("data").glob(f"*_{empresa}.json"):
         pr = PluginResult.model_validate_json(f.read_text(encoding="utf-8"))
         for c in pr.complaints:
-            docs.append(Document(page_content=c.description, metadata={"source": pr.plugin, "category": c.category}))
+            docs.append(Document(page_content=c.description,
+                                 metadata={"source": pr.plugin, "category": c.category}))
     return docs
 
-# Identificador da empresa
+# Empresa identificador
 empresa = st.session_state.get("empresa_cache", "").strip().upper()
 if not empresa:
     st.error("Nenhuma empresa selecionada.")
     st.stop()
 
-# Chaves dinâmicas
+# Chaves dinâmicas de session_state
 history_key = f"chat_history_{empresa}"
-initial_key = f"initial_messages_{empresa}"
-vector_key = f"vectorstore_chat_{empresa}"
+vstore_key = f"vectorstore_chat_{empresa}"
 init_flag = f"initialized_{empresa}"
+initial_key = f"initial_messages_{empresa}"
 
-# Inicializa vector store para cada empresa
-if vector_key not in st.session_state:
+# Inicializa vector store por empresa
+if vstore_key not in st.session_state:
     docs = load_documents(empresa)
     if not docs:
         st.error("Nenhum dado disponível para chat.")
         st.stop()
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     chunks = splitter.split_documents(docs)
-    st.session_state[vector_key] = FAISS.from_documents(chunks, OpenAIEmbeddings())
+    st.session_state[vstore_key] = FAISS.from_documents(chunks, OpenAIEmbeddings())
 
-# Setup LLM e chain
+# Setup LLM e RAG chain
 llm = ChatOpenAI(temperature=0)
 chain = ConversationalRetrievalChain.from_llm(
     llm,
-    retriever=st.session_state[vector_key].as_retriever(),
+    retriever=st.session_state[vstore_key].as_retriever(),
     return_source_documents=False
 )
 
-# Inicializa histórico e mensagens iniciais por empresa
-st.session_state.setdefault(history_key, [])
+# Inicializa histórico e mensagens iniciais apenas uma vez
+if history_key not in st.session_state:
+    st.session_state[history_key] = []
 if not st.session_state.get(init_flag):
     sys_prompt = (
         f"Olá! Hoje você é o assistente virtual de atendimento da empresa {empresa}. "
@@ -74,21 +76,27 @@ if not st.session_state.get(init_flag):
     )
     init_q = "Quem é você?"
     persona = llm([SystemMessage(content=sys_prompt), HumanMessage(content=init_q)])
+    # Guarda iniciais para passar ao chain
     st.session_state[initial_key] = [(init_q, persona.content)]
+    # Insere resposta inicial no histórico para exibição
+    st.session_state[history_key] = [(None, persona.content)]
     st.session_state[init_flag] = True
 
 # --- UI de chat ---
-# Exibe histórico real
-for user, bot in st.session_state[history_key]:
-    st.markdown(f"**Você:** {user}")
-    st.markdown(f"**Agente:** {bot}")
+# Exibe histórico (usuário/bot)
+for user_msg, bot_msg in st.session_state[history_key]:
+    if user_msg:
+        st.markdown(f"**Você:** {user_msg}")
+    st.markdown(f"**Agente:** {bot_msg}")
 
 # Entrada de nova mensagem
 user_input = st.text_input("Faça sua pergunta:", key=f"input_{empresa}")
 if user_input:
-    full_history = st.session_state[initial_key] + st.session_state[history_key]
+    full_history = st.session_state[initial_key] + [x for x in st.session_state[history_key] if x[0]]
     result = chain({"question": user_input, "chat_history": full_history})
     reply = result["answer"]
     st.session_state[history_key].append((user_input, reply))
-    # limpa o campo de entrada
-    st.session_state[f"input_{empresa}"] = ""
+    # não tentamos limpar o input para evitar conflito de widget
+
+# Focar no input automaticamente (opcional)
+st.experimental_rerun() if False else None
