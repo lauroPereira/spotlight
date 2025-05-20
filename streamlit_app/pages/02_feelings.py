@@ -14,7 +14,7 @@ from plugins.schema import PluginResult
 # Ajusta PYTHONPATH para importar plugins
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-st.set_page_config(page_icon="🔦", page_title="Spotlight – Análise de sentimentos", layout="wide")
+st.set_page_config(page_title="Spotlight", page_icon="😠", layout="wide")
 st.title(f"Analise de sentimentos das reclamações de {st.session_state.get('empresa_cache','N/D').upper()}")
 
 # Configura a barra lateral com o nome da empresa
@@ -42,7 +42,7 @@ with st.sidebar:
 # configura logger para plugins
 LOG_FORMAT = "%(asctime)s %(levelname)s [%(name)s] %(message)s"
 logging.basicConfig(level=logging.INFO,format=LOG_FORMAT)
-logger = logging.getLogger("mood-explorer")
+logger = logging.getLogger("mood-explorer-page")
 
 # --- Helpers ---
 

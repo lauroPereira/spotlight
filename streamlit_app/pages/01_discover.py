@@ -1,6 +1,5 @@
 import sys, os
 # Garante que o diretório raiz esteja no PYTHONPATH
-print(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 import streamlit as st
@@ -17,7 +16,8 @@ logging.basicConfig(
     format=LOG_FORMAT,
     handlers=[logging.StreamHandler()]
 )
-logger = logging.getLogger("front-end")
+logger = logging.getLogger("discovery-page")
+st.set_page_config(page_title="Spotlight", page_icon="🔎", layout="wide")
 
 # --- Helpers ---
 def load_plugins() -> dict[str, IngestPlugin]:
@@ -43,9 +43,6 @@ def load_result(plugin_key: str, empresa: str):
         return PluginResult.model_validate_json(file.read_text(encoding="utf-8"))
     except Exception:
         return None
-
-st.set_page_config(page_title="🔦 Spotlight – Reclamações e processos", layout="wide")
-
 
 # Configura o a barra lateral com o nome da empresa
 st.session_state.setdefault("empresa_cache", "")

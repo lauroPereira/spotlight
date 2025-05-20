@@ -1,7 +1,6 @@
 import streamlit as st
 import sys, os
 # Garante que o diretório raiz esteja no PYTHONPATH
-print(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 import streamlit as st

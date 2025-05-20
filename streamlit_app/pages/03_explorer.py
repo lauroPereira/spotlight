@@ -12,19 +12,42 @@ from clustering.cluster import cluster_texts
 # Ajusta PYTHONPATH para importar plugins
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
+st.set_page_config(page_title="Spotlight", page_icon="📈", layout="wide")
+
 # Sidebar já configurada em app.py: lê empresa_cache
+# Configura a barra lateral com o nome da empresa
+st.session_state.setdefault("empresa_cache", "")
+with st.sidebar:
+    st.sidebar.title("🔦 Spotlight")
+    st.sidebar.markdown(
+        "Coleta e agrupa reclamações e processos de empresas. "
+        "Escolha uma empresa na barra lateral para começar."
+    )
+    st.header("⚙️ Parâmetros")
+    empresa = st.text_input(
+        "🏢 Empresa", 
+        value=st.session_state["empresa_cache"], 
+        key="empresa_sidebar",
+        disabled=True
+        
+    )
+     # 👉 Bullet sempre visível informando a empresa selecionada
+    if st.session_state["empresa_cache"]:
+        st.markdown(f"- **Empresa selecionada:** {st.session_state['empresa_cache']}")
+        
+    st.button("🚀 Definir Empresa", disabled=True)
+    
 empresa = st.session_state.get("empresa_cache", "").strip()
 if not empresa:
     st.warning("▶️ Defina a empresa na barra lateral e volte aqui para explorar clusters.")
     st.stop()
 
-st.set_page_config(page_title="🔢 Data Explorer", layout="wide")
-st.title(f"🔢 Clusters de Reclamações para: {empresa.upper()}")
+st.title(f"📈 Agrupamentos de reclamações para: {empresa.upper()}")
 
 # Logger
 LOG_FORMAT = "%(asctime)s %(levelname)s [%(name)s] %(message)s"
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-logger = logging.getLogger("data-explorer")
+logger = logging.getLogger("data-explorer-page")
 
 # --- Helpers ---
 
