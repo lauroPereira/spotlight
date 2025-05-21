@@ -1,0 +1,10 @@
+[theme]
+# Cores principais
+primaryColor = "#4CAF50"              # cor dos botões, sliders, etc.
+backgroundColor = "#F0F2F6"           # fundo geral da página
+secondaryBackgroundColor = "#FFFFFF"  # fundo de cards, sidebar, widgets
+textColor = "#262730"                 # cor do texto
+font = "sans serif"                   # opções: "sans serif", "serif", "monospace"
+
+# Raio de borda padrão em rem ou pixels (opcional)
+baseRadius = "0.5rem"

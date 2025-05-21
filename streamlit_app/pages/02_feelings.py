@@ -14,7 +14,7 @@ from plugins.schema import PluginResult
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 st.set_page_config(page_title="Spotlight", page_icon="😠", layout="wide")
-st.title(f"Analise de sentimentos das reclamações de {st.session_state.get('empresa_cache','N/D').upper()}")
+st.title(f"😠 Analise de sentimentos das reclamações de {st.session_state.get('empresa_cache','N/D').upper()}")
 
 # Configura a barra lateral com o nome da empresa
 st.session_state.setdefault("empresa_cache", "")

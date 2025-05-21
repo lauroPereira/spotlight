@@ -60,27 +60,29 @@ class CVMPlugin(IngestPlugin):
             )
 
         # 6) Filtrar por acusado OU objeto
-        mask = df.get(acc_col, pd.Series()) \
-               .str.contains(company, case=False, na=False) \
-             | df.get(obj_col, pd.Series()) \
-               .str.contains(company, case=False, na=False)
+        # força string e substitui NaN por "" para não gerar float
+        serie_acc = df.get(acc_col, pd.Series()).fillna("").astype(str)
+        serie_obj = df.get(obj_col,  pd.Series()).fillna("").astype(str)
+        mask = (
+            serie_acc.str.contains(company, case=False, na=False)
+            | serie_obj.str.contains(company, case=False, na=False)
+        )
         matched = df[mask]
         logger.info("🔎 %d processos encontrados para '%s'", len(matched), company)
 
         # 7) Construir lista de Complaint
         complaints: List[Complaint] = []
         for _, row in matched.iterrows():
-            # se existir acusado, prioriza; senão, usa objeto
-            name = row.get(acc_col) or row.get(obj_col)
+            raw_name = row.get(acc_col) or row.get(obj_col) or ""
+            name     = str(raw_name).strip()
             complaints.append(
                 Complaint(
-                    date        = row[date_col],
-                    category    = row.get(obj_col, ""),       # tipo de processo
-                    description = row.get(ementa_col, ""),
+                    date        = str(row[date_col]).strip(),
+                    category    = str(row.get(obj_col, "") or "").strip(),
+                    description = str(row.get(ementa_col, "") or "").strip(),
                     razao_social= name
                 )
             )
-
         logger.info("🏁 linhas brutas: %d; reclamações extraídas: %d",
                     total_raw, len(complaints))
 

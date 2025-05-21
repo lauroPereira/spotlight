@@ -31,8 +31,8 @@ logger = logging.getLogger("chatbot-page")
 from plugins.schema import PluginResult
 
 # Configuração de página
-st.set_page_config(page_title="Chat", page_icon="💭", layout="wide")
-st.title(f"💭 Descubra ainda mais sobre: {st.session_state.get('empresa_cache','N/D').upper()}")
+st.set_page_config(page_title="Chat", page_icon="🤖", layout="wide")
+st.title(f"🤖 Descubra ainda mais sobre: {st.session_state.get('empresa_cache','N/D').upper()}")
 
 # Sidebar: mostra empresa
 st.sidebar.markdown("**Empresa:** " + st.session_state.get("empresa_cache", "N/D").upper())
@@ -121,7 +121,7 @@ def process_input():
 for user_msg, bot_msg in st.session_state[history_key]:
     if user_msg:
         st.markdown(f"**Você:** {user_msg}")
-    st.markdown(f"**Agente:** {bot_msg}")
+    st.markdown(f"**🤖 Assistente da empresa {empresa}:** {bot_msg}")
 
 # Entrada de nova mensagem com callback
 st.text_input("Faça sua pergunta:", key=f"input_{empresa}", on_change=process_input)

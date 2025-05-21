@@ -32,7 +32,7 @@ with st.sidebar:
 )
 
 st.title("🔦 Spotlight – Seja muito bem-vindo!")
-st.markdown("O 🔦 **Spotlight** está aqui para ajudar você a entender o que realmente importa nas reclamações e processos de clientes. Siga estes passos para tirar o máximo proveito:\n")
+st.markdown("O 🔦 **Spotlight** está aqui para ajudar você a entender o que realmente importa nas reclamações dos clientes. Siga estes passos para tirar o máximo proveito:\n")
 st.markdown("1. **Escolha sua empresa**  \nNo menu à esquerda, digite o nome da empresa que deseja investigar e clique em **“🚀 Definir Empresa”**. Este passo garante que todas as páginas do app vão trabalhar com essa mesma empresa, sem confusão.\n")
 st.markdown("2. **🔎 Discover**  \nAqui você coleta e agrupa todas as reclamações e processos públicos sobre a empresa em questão. Clique em **“🔄 Atualizar”** em cada card para buscar os dados mais recentes — os totais e agrupamentos aparecerão imediatamente!\n")
 st.markdown("3. **😠 Mood Explorer**  \nQuer saber como os clientes estão se sentindo? Vá para a aba **Mood Explorer** para rodar uma análise de sentimento e descobrir quais tópicos geram mais frustração (ou elogios!).\n")

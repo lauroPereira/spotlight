@@ -1,56 +1,47 @@
-import streamlit as st
 import sys, os
-# Garante que o diretório raiz esteja no PYTHONPATH
+import streamlit as st
+
+# Ajusta PYTHONPATH para importar plugins/schema
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-import streamlit as st
 import logging
-
-# configura logger para plugins
 LOG_FORMAT = "%(asctime)s %(levelname)s [%(name)s] %(message)s"
-logging.basicConfig(
-    level=logging.INFO,
-    format=LOG_FORMAT,
-    handlers=[logging.StreamHandler()]
+logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+logger = logging.getLogger("helpdesk-page")
+
+# Página de mock de integrações com CRMs
+st.set_page_config(page_title="HelpDesk", page_icon="🛠️", layout="wide")
+st.title("🛠️ HelpDesk – Integrações com CRMs")
+
+st.markdown(
+    "Nesta página você pode sincronizar e consultar tickets de diferentes sistemas de CRM corporativo. "
+    "Clique em '🔎 Buscar' para simular a conexão e recuperação de dados." 
 )
-logger = logging.getLogger("front-end")
 
+# Layout em três colunas para cada CRM
+cols = st.columns(3, gap="large")
 
-st.set_page_config(page_title="🔦 Spotlight – Reclamações e processos", layout="wide")
+with cols[0]:
+    st.subheader("Salesforce")
+    st.image("assets\salesforce-logo.png", use_container_width=True)
+    if st.button("🔎 Buscar", key="search_salesforce"):
+        st.info("Buscando tickets no Salesforce...")
+        # Aqui entraria a lógica real de integração
 
+with cols[1]:
+    st.subheader("Siebel")
+    st.image("assets\siebel-logo.png", use_container_width=True)
+    if st.button("🔎 Buscar", key="search_siebel"):
+        st.info("Buscando tickets no Siebel...")
+        # Aqui entraria a lógica real de integração
 
-# Configura o a barra lateral com o nome da empresa
-st.session_state.setdefault("empresa_cache", "")
-# garante que exista
-if "empresa_cache" not in st.session_state:
-    st.session_state["empresa_cache"] = ""
-# Sidebar
-st.sidebar.title("🔦 Spotlight")
-st.sidebar.markdown(
-    "Coleta e agrupa reclamações e processos de empresas. "
-    "Escolha uma empresa na barra lateral para começar."
-)
-# Sidebar - parâmetros
-with st.sidebar:
-    st.header("⚙️ Parâmetros")
-    empresa = st.text_input(
-        "🏢 Empresa", 
-        value=st.session_state["empresa_cache"], 
-        key="empresa_sidebar"
-    )
-     # 👉 Bullet sempre visível informando a empresa selecionada
-    if st.session_state["empresa_cache"]:
-        st.markdown(f"- **Empresa selecionada:** {st.session_state['empresa_cache']}")
-        
-    if st.button("🚀 Definir Empresa"):
-        # atualiza o cache e recarrega para as outras páginas
-        st.session_state["empresa_cache"] = empresa.strip()
-        st.rerun()
-        
-# lê o parâmetro fixo da sidebar
-empresa = st.session_state["empresa_cache"]
-if not empresa:
-    st.warning("▶️ Defina a empresa desejada na barra lateral.")
-    st.stop()
-else:
-    st.title(f"🛠️ Importe seus tickets internos")
+with cols[2]:
+    st.subheader("ServiceNow")
+    st.image("assets\service-now-logo.png", use_container_width=True)
+    if st.button("🔎 Buscar", key="search_servicenow"):
+        st.info("Buscando tickets no ServiceNow...")
+        # Aqui entraria a lógica real de integração
+
+# Rodapé de observação
+st.markdown("---")
+st.caption("*Este é um mock de interface. Integrações reais devem ser configuradas nos parâmetros de autenticação.*")
